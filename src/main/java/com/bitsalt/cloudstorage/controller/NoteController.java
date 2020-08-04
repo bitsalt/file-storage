@@ -30,7 +30,7 @@ public class NoteController {
         String actionError = null;
 
         if (noteForm.getNoteId() > 0) {
-            return this.editNote(authentication, noteForm, model);
+            return this.editNote(noteForm, model);
         }
         boolean result;
         User user = this.userService.getUser(authentication.getName());
@@ -45,7 +45,7 @@ public class NoteController {
     }
 
 
-    private String editNote(Authentication authentication, NoteForm noteForm, Model model) {
+    private String editNote(NoteForm noteForm, Model model) {
         String actionError = null;
 
         boolean result;

@@ -129,7 +129,7 @@
                 <button style="margin: 0.25em;" class="btn btn-info float-right" type="button" onclick="showCredentialModal()">+ Add a New Credential</button>
 
                 <div class="table-responsive">
-                    <table class="table table-striped" th:object="${credentials}" id="credentialTable">
+                    <table class="table table-striped" id="credentialTable">
                         <thead>
                         <tr>
                             <th style="width: 20%" scope="col"></th>
@@ -141,20 +141,16 @@
                         <tbody>
                         <tr th:each="cred : ${userCredentials}">
                             <td>
-                                <button type="button" class="btn btn-success"
-                                        onclick="showCredentialModal(
-                                                    this.getAttribute('data-credentialId),
-                                                    this.getAttribute('data-url),
-                                                    this.getAttribute('data-username),
-                                                    this.getAttribute('data-password)"
+                                <button class="btn btn-success" onclick="showCredentialModal(this.getAttribute('data-credentialId'),this.getAttribute('data-url'),this.getAttribute('data-username'),this.getAttribute('data-password'))"
                                         th:data-credentialId="*{cred.credentialId}"
                                         th:data-url="*{cred.url}"
-                                        th:data-username="*{cred.username}"
-                                        th:data-password="*{cred.password}">Edit</button>
-                                <a class="btn btn-danger">Delete</a>
+                                        th:data-username="*{cred.userName}"
+                                        th:data-password="*{cred.password}"
+                                    type="button">Edit</button>
+                                <a th:href="@{/credential/delete/{credentialId}(credentialId=*{cred.credentialId})}" class="btn btn-danger">Delete</a>
                             </td>
                             <th scope="row" th:text="*{cred.url}"></th>
-                            <td th:text="*{cred.username}"></td>
+                            <td th:text="*{cred.userName}"></td>
                             <td th:text="*{cred.password}"></td>
                         </tr>
                         </tbody>
