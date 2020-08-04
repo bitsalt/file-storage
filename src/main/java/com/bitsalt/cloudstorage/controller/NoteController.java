@@ -29,23 +29,33 @@ public class NoteController {
     public String showNoteResult(Authentication authentication, NoteForm noteForm, Model model) {
         String actionError = null;
 
-        if (noteForm.getNoteTitle() == null || noteForm.getNoteDescription() == null) {
-            model.addAttribute("actionError", "This note has blank fields. Did you forget to add something?");
-        } else {
-            boolean result;
-            int noteId = noteForm.getNoteId();
-            if (noteId > 0) {
-                result = this.noteService.saveEditedNote(noteForm);
-            } else {
-                User user = this.userService.getUser(authentication.getName());
-                result = this.noteService.addNote(noteForm, user.getUserId());
-            }
+        if (noteForm.getNoteId() > 0) {
+            return this.editNote(authentication, noteForm, model);
+        }
+        boolean result;
+        User user = this.userService.getUser(authentication.getName());
+        result = this.noteService.addNote(noteForm, user.getUserId());
 
-            if (result) {
-                model.addAttribute("actionSuccess", true);
-            } else {
-                model.addAttribute("actionFailure", true);
-            }
+        if (result) {
+            model.addAttribute("actionSuccess", true);
+        } else {
+            model.addAttribute("actionFailure", true);
+        }
+        return "result";
+    }
+
+
+    private String editNote(Authentication authentication, NoteForm noteForm, Model model) {
+        String actionError = null;
+
+        boolean result;
+        int noteId = noteForm.getNoteId();
+        result = this.noteService.saveEditedNote(noteForm);
+
+        if (result) {
+            model.addAttribute("actionSuccess", true);
+        } else {
+            model.addAttribute("actionFailure", true);
         }
         return "result";
     }

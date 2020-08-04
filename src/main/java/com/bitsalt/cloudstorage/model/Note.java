@@ -1,7 +1,7 @@
 package com.bitsalt.cloudstorage.model;
 
 public class Note {
-    private int noteId;
+    private Integer noteId;
     private String noteTitle;
     private String noteDescription;
     private int userId; // foreign key users.userid
@@ -11,12 +11,14 @@ public class Note {
         this.noteDescription = noteDescription;
     }
 
-    public int getNoteId() {
+    public Integer getNoteId() {
         return noteId;
     }
 
-    public void setNoteId(int noteId) { this.noteId = noteId; }
-    public void setnoteid(int noteId) {
+    public void setNoteId(Integer noteId) {
+        this.noteId = noteId;
+    }
+    public void setnoteid(Integer noteId) {
         this.noteId = noteId;
     }
 

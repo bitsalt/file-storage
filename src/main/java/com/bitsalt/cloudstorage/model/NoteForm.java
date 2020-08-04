@@ -1,16 +1,18 @@
 package com.bitsalt.cloudstorage.model;
 
 public class NoteForm {
-    private int noteId;
+    private Integer noteId;
     private String noteTitle;
     private String noteDescription;
 
-    public int getNoteId() {
+    public Integer getNoteId() {
+        if (this.noteId == null) {
+            return 0;
+        }
         return noteId;
     }
 
-    public void setNoteId(int noteId) {
-
+    public void setNoteId(Integer noteId) {
         this.noteId = noteId;
     }
 
