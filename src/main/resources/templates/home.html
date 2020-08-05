@@ -145,13 +145,13 @@
                                         th:data-credentialId="*{cred.credentialId}"
                                         th:data-url="*{cred.url}"
                                         th:data-username="*{cred.userName}"
-                                        th:data-password="*{cred.password}"
+                                        th:data-password="${encryptionService.decryptValue(cred.password, cred.key)}"
                                     type="button">Edit</button>
                                 <a th:href="@{/credential/delete/{credentialId}(credentialId=*{cred.credentialId})}" class="btn btn-danger">Delete</a>
                             </td>
                             <th scope="row" th:text="*{cred.url}"></th>
                             <td th:text="*{cred.userName}"></td>
-                            <td th:text="*{cred.password}"></td>
+                            <td th:text="${encryptionService.decryptValue(cred.password, cred.key)}"></td>
                         </tr>
                         </tbody>
                     </table>

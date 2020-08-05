@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class NoteController {
     private final NoteService noteService;
     private final UserService userService;
-    private String errorMessage;
 
     public NoteController(NoteService noteService, UserService userService) {
         this.userService = userService;

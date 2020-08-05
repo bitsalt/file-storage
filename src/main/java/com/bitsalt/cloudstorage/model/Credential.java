@@ -5,12 +5,14 @@ public class Credential {
     private Integer credentialId;
     private String url;
     private String userName;
+    private String key;
     private String password;
     private int userId;
 
-    public Credential(String url, String userName, String password) {
+    public Credential(String url, String userName, String key, String password) {
         this.url = url;
         this.userName = userName;
+        this.key = key;
         this.password = password;
     }
 
@@ -52,5 +54,13 @@ public class Credential {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }
