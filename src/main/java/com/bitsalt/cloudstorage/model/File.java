@@ -2,14 +2,14 @@ package com.bitsalt.cloudstorage.model;
 
 public class File {
 
-    private int fileId;
+    private Integer fileId;
     private String fileName;
     private String contentType;
     private String fileSize;
     private int userId; // foreign key users.userid
-    private String filedata;
+    private byte filedata;
 
-    public File(int fileId, String fileName, String contentType, String fileSize, int userId, String filedata) {
+    public File(int fileId, String fileName, String contentType, String fileSize, int userId, byte filedata) {
         this.fileId = fileId;
         this.fileName = fileName;
         this.contentType = contentType;
@@ -58,11 +58,11 @@ public class File {
         this.userId = userId;
     }
 
-    public String getFiledata() {
+    public byte getFiledata() {
         return filedata;
     }
 
-    public void setFiledata(String filedata) {
+    public void setFiledata(byte filedata) {
         this.filedata = filedata;
     }
 }

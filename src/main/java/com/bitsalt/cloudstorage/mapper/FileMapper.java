@@ -16,8 +16,8 @@ public interface FileMapper {
     int insert(File file);
 
     @Update("UPDATE files SET filename = #{fileName}, contenttype = #{contentType}, filesize = #{fileSize}, filedata = #{fileData} WHERE fileid = #{fileId}")
-    int update(String fileName, String contentType, String fileSize, String fileData, int fileId);
+    int update(String fileName, String contentType, String fileSize, byte fileData, int fileId);
 
-    @Delete("DELETE * FROM files WHERE fileid = #{fileId}")
+    @Delete("DELETE FROM files WHERE fileid = #{fileId}")
     int delete(int fileId);
 }
