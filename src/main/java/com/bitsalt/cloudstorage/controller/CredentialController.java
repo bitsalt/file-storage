@@ -1,7 +1,6 @@
 package com.bitsalt.cloudstorage.controller;
 
-import com.bitsalt.cloudstorage.model.CredentialForm;
-import com.bitsalt.cloudstorage.model.NoteForm;
+import com.bitsalt.cloudstorage.model.Credential;
 import com.bitsalt.cloudstorage.model.User;
 import com.bitsalt.cloudstorage.service.CredentialService;
 import com.bitsalt.cloudstorage.service.UserService;
@@ -24,15 +23,15 @@ public class CredentialController {
     }
 
     @PostMapping("/credential/add")
-    public String showCredResult(Authentication authentication, CredentialForm credentialForm, Model model) {
+    public String showCredResult(Authentication authentication, Credential credential, Model model) {
         String actionError = null;
 
-        if (credentialForm.getCredentialId() > 0) {
-            return this.editCredential(credentialForm, model);
+        if (credential.getCredentialId() > 0) {
+            return this.editCredential(credential, model);
         }
 
         User user = this.userService.getUser(authentication.getName());
-        boolean result = this.credentialService.addCredential(credentialForm, user.getUserId());
+        boolean result = this.credentialService.addCredential(credential, user.getUserId());
 
         if (result) {
             model.addAttribute("actionSuccess", true);
@@ -42,8 +41,8 @@ public class CredentialController {
         return "result";
     }
 
-    private String editCredential(CredentialForm credentialForm, Model model) {
-        boolean result = this.credentialService.saveEditedCredential(credentialForm);
+    private String editCredential(Credential credential, Model model) {
+        boolean result = this.credentialService.saveEditedCredential(credential);
         if (result) {
             model.addAttribute("actionSuccess", true);
         } else {
@@ -53,10 +52,10 @@ public class CredentialController {
     }
 
     @GetMapping("/credential/delete/{credentialId}")
-    public String deleteCredential(@PathVariable("credentialId") int credId, CredentialForm credentialForm, Model model) {
+    public String deleteCredential(@PathVariable("credentialId") int credId, Credential credential, Model model) {
         String actionError = null;
 
-        if (this.credentialService.deleteCredential(credentialForm)) {
+        if (this.credentialService.deleteCredential(credential)) {
             model.addAttribute("actionSuccess", true);
         } else {
             model.addAttribute("actionFailure", true);

@@ -2,7 +2,6 @@ package com.bitsalt.cloudstorage.service;
 
 import com.bitsalt.cloudstorage.mapper.NoteMapper;
 import com.bitsalt.cloudstorage.model.Note;
-import com.bitsalt.cloudstorage.model.NoteForm;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,9 +14,8 @@ public class NoteService {
         this.noteMapper = noteMapper;
     }
 
-    public boolean addNote(NoteForm noteForm, int userId) {
+    public boolean addNote(Note note, int userId) {
 
-        Note note = new Note(noteForm.getNoteTitle(), noteForm.getNoteDescription());
         note.setUserId(userId);
         int id = noteMapper.insert(note);
         if (id > 0) {
@@ -26,25 +24,20 @@ public class NoteService {
         return false;
     }
 
-    public NoteForm getNoteForEditing(int noteId) {
-        Note note = noteMapper.getSingleNote(noteId);
-        NoteForm noteForm = new NoteForm();
-        noteForm.setNoteDescription(note.getNoteDescription());
-        noteForm.setNoteTitle(note.getNoteTitle());
-        noteForm.setNoteId(note.getNoteId());
-        return noteForm;
+    public Note getNoteForEditing(int noteId) {
+        return noteMapper.getSingleNote(noteId);
     }
 
-    public boolean saveEditedNote(NoteForm noteForm) {
-        int result = noteMapper.update(noteForm.getNoteTitle(), noteForm.getNoteDescription(), noteForm.getNoteId());
+    public boolean saveEditedNote(Note note) {
+        int result = noteMapper.update(note.getNoteTitle(), note.getNoteDescription(), note.getNoteId());
         if (result > 0) {
             return true;
         }
         return false;
     }
 
-    public boolean deleteNote(NoteForm noteForm) {
-        int result = noteMapper.delete(noteForm.getNoteId());
+    public boolean deleteNote(Note note) {
+        int result = noteMapper.delete(note.getNoteId());
         if (result > 0) {
             return true;
         }

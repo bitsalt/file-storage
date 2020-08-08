@@ -1,7 +1,6 @@
 package com.bitsalt.cloudstorage.service;
 
 import com.bitsalt.cloudstorage.mapper.CredentialMapper;
-import com.bitsalt.cloudstorage.model.CredentialForm;
 import com.bitsalt.cloudstorage.model.Credential;
 import org.springframework.stereotype.Service;
 import java.util.Hashtable;
@@ -21,10 +20,8 @@ public class CredentialService {
         this.encryptionService = encryptionService;
     }
 
-    public boolean addCredential(CredentialForm credentialForm, int userId) {
-        Hashtable<String, String> hash = this.encryptPassword(credentialForm.getPassword());
-        Credential credential = new Credential(credentialForm.getUrl(),
-                credentialForm.getUserName(), hash.get("key"), hash.get("password"));
+    public boolean addCredential(Credential credential, int userId) {
+        Hashtable<String, String> hash = this.encryptPassword(credential.getPassword());
         credential.setUserId(userId);
         int credId = this.credentialMapper.insert(credential);
         if (credId > 0) {
@@ -33,29 +30,18 @@ public class CredentialService {
         return false;
     }
 
-    public CredentialForm getCredForEditing(int credId) {
-        Credential credential = this.credentialMapper.getSingleCredential(credId);
-        CredentialForm credentialForm = new CredentialForm();
-        credentialForm.setCredentialId(credential.getCredentialId());
-        credentialForm.setUserId(credential.getUserId());
-        credentialForm.setUrl(credential.getUrl());
-        credentialForm.setUserName(credential.getUserName());
-        credentialForm.setPassword(this.encryptionService.decryptValue(credential.getPassword(), credential.getKey()));
-        return credentialForm;
-    }
-
-    public boolean saveEditedCredential(CredentialForm credentialForm) {
-        Hashtable<String, String> hash = this.encryptPassword(credentialForm.getPassword());
-        int result = this.credentialMapper.update(credentialForm.getUrl(), credentialForm.getUserName(),
-               hash.get("key"), hash.get("password"), credentialForm.getCredentialId());
+    public boolean saveEditedCredential(Credential credential) {
+        Hashtable<String, String> hash = this.encryptPassword(credential.getPassword());
+        int result = this.credentialMapper.update(credential.getUrl(), credential.getUserName(),
+               hash.get("key"), hash.get("password"), credential.getCredentialId());
         if (result > 0) {
             return true;
         }
         return false;
     }
 
-    public boolean deleteCredential(CredentialForm credentialForm) {
-        int result = this.credentialMapper.delete(credentialForm.getCredentialId());
+    public boolean deleteCredential(Credential credential) {
+        int result = this.credentialMapper.delete(credential.getCredentialId());
         if (result > 0) {
             return true;
         }

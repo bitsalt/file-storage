@@ -1,6 +1,6 @@
 package com.bitsalt.cloudstorage.controller;
 
-import com.bitsalt.cloudstorage.model.NoteForm;
+import com.bitsalt.cloudstorage.model.Note;
 import com.bitsalt.cloudstorage.model.User;
 import com.bitsalt.cloudstorage.service.CredentialService;
 import com.bitsalt.cloudstorage.service.EncryptionService;
@@ -30,7 +30,7 @@ public class HomeController {
     }
 
     @GetMapping
-    public String getHomePage(NoteForm noteForm, Model model) {
+    public String getHomePage(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();
         User user = this.userService.getUser(userName);

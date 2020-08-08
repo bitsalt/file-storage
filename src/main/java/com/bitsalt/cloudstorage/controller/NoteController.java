@@ -1,7 +1,7 @@
 package com.bitsalt.cloudstorage.controller;
 
 import com.bitsalt.cloudstorage.mapper.UserMapper;
-import com.bitsalt.cloudstorage.model.NoteForm;
+import com.bitsalt.cloudstorage.model.Note;
 import com.bitsalt.cloudstorage.model.User;
 import com.bitsalt.cloudstorage.service.NoteService;
 import com.bitsalt.cloudstorage.service.UserService;
@@ -25,15 +25,15 @@ public class NoteController {
     }
 
     @PostMapping("/note/add")
-    public String showNoteResult(Authentication authentication, NoteForm noteForm, Model model) {
+    public String showNoteResult(Authentication authentication, Note note, Model model) {
         String actionError = null;
 
-        if (noteForm.getNoteId() > 0) {
-            return this.editNote(noteForm, model);
+        if (note.getNoteId() > 0) {
+            return this.editNote(note, model);
         }
         boolean result;
         User user = this.userService.getUser(authentication.getName());
-        result = this.noteService.addNote(noteForm, user.getUserId());
+        result = this.noteService.addNote(note, user.getUserId());
 
         if (result) {
             model.addAttribute("actionSuccess", true);
@@ -44,12 +44,12 @@ public class NoteController {
     }
 
 
-    private String editNote(NoteForm noteForm, Model model) {
+    private String editNote(Note note, Model model) {
         String actionError = null;
 
         boolean result;
-        int noteId = noteForm.getNoteId();
-        result = this.noteService.saveEditedNote(noteForm);
+        int noteId = note.getNoteId();
+        result = this.noteService.saveEditedNote(note);
 
         if (result) {
             model.addAttribute("actionSuccess", true);
@@ -59,18 +59,18 @@ public class NoteController {
         return "result";
     }
 
-    @PostMapping("/note/edit/{noteId}")
-    public String showNoteForEdit(Model model, int noteId) {
-        NoteForm noteForm = this.noteService.getNoteForEditing(noteId);
-        model.addAttribute("editNote", noteForm);
-        return "home/#nav-notes";
-    }
+//    @PostMapping("/note/edit/{noteId}")
+//    public String showNoteForEdit(Model model, int noteId) {
+//        Note note = this.noteService.getNoteForEditing(noteId);
+//        model.addAttribute("editNote", note);
+//        return "home/#nav-notes";
+//    }
 
     @GetMapping("/note/delete/{noteId}")
-    public String deleteNote(@PathVariable("noteId") int noteId, NoteForm noteForm, Model model) {
+    public String deleteNote(@PathVariable("noteId") int noteId, Note note, Model model) {
         String actionError = null;
 
-        if (this.noteService.deleteNote(noteForm)) {
+        if (this.noteService.deleteNote(note)) {
             model.addAttribute("actionSuccess", true);
         } else {
             model.addAttribute("actionFailure", true);
