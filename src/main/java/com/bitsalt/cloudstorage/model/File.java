@@ -1,24 +1,28 @@
 package com.bitsalt.cloudstorage.model;
 
+import java.sql.Blob;
+
+
 public class File {
 
     private Integer fileId;
     private String fileName;
     private String contentType;
-    private String fileSize;
-    private int userId; // foreign key users.userid
-    private byte filedata;
+    private Long fileSize;
+    private Integer userId; // foreign key users.userid
+    private byte[] fileData;
 
-    public File(int fileId, String fileName, String contentType, String fileSize, int userId, byte filedata) {
+
+    public File(Integer fileId, String fileName, String contentType, Long fileSize, byte[] fileData, Integer userId) {
         this.fileId = fileId;
         this.fileName = fileName;
         this.contentType = contentType;
         this.fileSize = fileSize;
+        this.fileData = fileData;
         this.userId = userId;
-        this.filedata = filedata;
     }
 
-    public int getFileId() {
+    public Integer getFileId() {
         return fileId;
     }
 
@@ -42,27 +46,27 @@ public class File {
         this.contentType = contentType;
     }
 
-    public String getFileSize() {
-        return fileSize;
+    public Long getFileSize() {
+        return this.fileSize;
     }
 
-    public void setFileSize(String fileSize) {
+    public void setFileSize(Long fileSize) {
         this.fileSize = fileSize;
     }
 
-    public int getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
-    public byte getFiledata() {
-        return filedata;
+    public byte[] getFiledata() {
+        return this.fileData;
     }
 
-    public void setFiledata(byte filedata) {
-        this.filedata = filedata;
+    public void setFileData(byte[] fileData) {
+        this.fileData = fileData;
     }
 }

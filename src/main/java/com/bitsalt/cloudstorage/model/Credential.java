@@ -1,7 +1,6 @@
 package com.bitsalt.cloudstorage.model;
 
 public class Credential {
-
     private Integer credentialId;
     private String url;
     private String userName;
