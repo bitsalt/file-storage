@@ -12,13 +12,17 @@ public class File {
     private Integer userId; // foreign key users.userid
     private byte[] fileData;
 
+    public File(Integer fileId, String fileName) {
+        this.fileId = fileId;
+        this.fileName = fileName;
+    }
 
     public File(Integer fileId, String fileName, String contentType, Long fileSize, byte[] fileData, Integer userId) {
         this.fileId = fileId;
         this.fileName = fileName;
         this.contentType = contentType;
         this.fileSize = fileSize;
-        this.fileData = fileData;
+        this.fileData = (byte[])fileData;
         this.userId = userId;
     }
 
@@ -26,7 +30,7 @@ public class File {
         return fileId;
     }
 
-    public void setFileId(int fileId) {
+    public void setFileId(Integer fileId) {
         this.fileId = fileId;
     }
 
@@ -63,7 +67,7 @@ public class File {
     }
 
     public byte[] getFiledata() {
-        return this.fileData;
+        return (byte[] )this.fileData;
     }
 
     public void setFileData(byte[] fileData) {

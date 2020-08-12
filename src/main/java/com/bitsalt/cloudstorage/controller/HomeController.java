@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+
 @Controller
 @RequestMapping("/")
 public class HomeController {
@@ -36,6 +37,7 @@ public class HomeController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();
         User user = this.userService.getUser(userName);
+//        this.fileService.deleteAllFiles();
         model.addAttribute("userFiles", this.fileService.getFiles(user.getUserId()));
         model.addAttribute("userNotes", this.noteService.getUserNotes(user.getUserId()));
         model.addAttribute("userCredentials", this.credentialService.getUserCredentials(user.getUserId()));

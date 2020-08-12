@@ -4,6 +4,7 @@ import com.bitsalt.cloudstorage.model.File;
 import com.bitsalt.cloudstorage.model.User;
 import com.bitsalt.cloudstorage.service.FileService;
 import com.bitsalt.cloudstorage.service.UserService;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 @Controller
@@ -70,6 +72,22 @@ public class FileController {
                 .contentType(MediaType.parseMediaType(file.getContentType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")
                 .body(file.getFiledata());
+    }
+
+    public ResponseEntity<Object> downloadFile(@PathVariable("fileId") Integer fileId, Model model) {
+        File usrFile = this.fileService.getFile(fileId);
+        byte[] data = usrFile.getFiledata();
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
+        InputStreamResource resource = new InputStreamResource(inputStream);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", String.format("attachment; filename=\"%s\"", usrFile.getFileName()));
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+        ResponseEntity<Object>
+                responseEntity = ResponseEntity.ok().headers(headers).contentLength(data.length).contentType(
+                MediaType.parseMediaType("application/txt")).body(resource);
+        return responseEntity;
     }
 
 }

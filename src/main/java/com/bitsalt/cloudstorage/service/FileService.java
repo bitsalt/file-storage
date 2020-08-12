@@ -17,14 +17,15 @@ public class FileService {
         this.fileMapper = fileMapper;
     }
 
-    public List<File> getFiles(int userId) {
+    public List<File> getFiles(Integer userId) {
         List<File> files = this.fileMapper.getFiles(userId);
         return files;
     }
 
-    public File getFile(int fileId) {
+    public File getFile(Integer fileId) {
         return this.fileMapper.getFile(fileId);
     }
+
 
     public boolean saveFile(MultipartFile multipartFile, Integer userId) throws IOException {
         InputStream inputStream = multipartFile.getInputStream();
@@ -35,7 +36,7 @@ public class FileService {
                 multipartFile.getBytes(),
                 userId
         );
-        int id;
+        Integer id;
         try {
             if (file.getFileId() == null) {
                 id = this.fileMapper.insert(file);
@@ -47,7 +48,7 @@ public class FileService {
             return false;
         }
 
-        if (id > 0) {
+        if (id != null) {
             return true;
         }
         return false;
@@ -69,5 +70,8 @@ public class FileService {
         return false;
     }
 
+    public void deleteAllFiles() {
+        this.fileMapper.deleteAll();
+    }
 }
 

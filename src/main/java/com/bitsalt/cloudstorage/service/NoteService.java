@@ -14,18 +14,13 @@ public class NoteService {
         this.noteMapper = noteMapper;
     }
 
-    public boolean addNote(Note note, int userId) {
-
+    public boolean addNote(Note note, Integer userId) {
         note.setUserId(userId);
-        int id = noteMapper.insert(note);
-        if (id > 0) {
+        Integer id = noteMapper.insert(note);
+        if (id != null) {
             return true;
         }
         return false;
-    }
-
-    public Note getNoteForEditing(int noteId) {
-        return noteMapper.getSingleNote(noteId);
     }
 
     public boolean saveEditedNote(Note note) {

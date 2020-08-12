@@ -26,7 +26,7 @@
         </nav>
         <div class="tab-content" id="nav-tabContent">
             <div class="tab-pane fade show active" id="nav-files" role="tabpanel" aria-labelledby="nav-files-tab">
-                <form action="#" enctype="multipart/form-data" method="POST">
+                <form th:action="@{/file/save}" action="#" enctype="multipart/form-data" method="POST">
                     <div class="container">
                         <div class="row" style="margin: 1em;">
                             <div class="col-sm-2">
@@ -50,12 +50,12 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
+                        <tr th:each="file : ${userFiles}">
                             <td>
-                                <a target="_blank" class="btn btn-success">View</a>
-                                <a  class="btn btn-danger">Delete</a>
+                                <a th:href="@{/file/view/{fileId}(fileId=*{file.fileId}" target="_blank" class="btn btn-success">View</a>
+                                <a th:href="@{/file/delete/{fileId}(fileId=*{file.fileId}" class="btn btn-danger">Delete</a>
                             </td>
-                            <th scope="row">ExampleFile.txt</th>
+                            <th scope="row" th:text="*{file.fileName}">ExampleFile.txt</th>
                         </tr>
                         </tbody>
                     </table>
@@ -146,7 +146,7 @@
                                         th:data-url="*{cred.url}"
                                         th:data-username="*{cred.userName}"
                                         th:data-password="${encryptionService.decryptValue(cred.password, cred.key)}"
-                                    type="button">Edit</button>
+                                        type="button">Edit</button>
                                 <a th:href="@{/credential/delete/{credentialId}(credentialId=*{cred.credentialId})}" class="btn btn-danger">Delete</a>
                             </td>
                             <th scope="row" th:text="*{cred.url}"></th>
@@ -169,13 +169,14 @@
                             <div class="modal-body">
                                 <form th:action="@{/credential/add}" action="#" method="POST">
                                     <input type="hidden" name="credentialId" id="credential-id">
+                                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                                     <div class="form-group">
                                         <label for="note-title" class="col-form-label">URL</label>
                                         <input type="text" name= "url" class="form-control" id="credential-url" maxlength="100" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="note-title" class="col-form-label">Username</label>
-                                        <input type="text" name= "username" class="form-control" id="credential-username" maxlength="30" required>
+                                        <input type="text" name= "userName" class="form-control" id="credential-username" maxlength="30" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="note-title" class="col-form-label">Password</label>
@@ -218,6 +219,7 @@
                 $('#credential-password').val(password ? password : '');
                 $('#credentialModal').modal('show');
             }
+
         </script>
 </body>
 </html>

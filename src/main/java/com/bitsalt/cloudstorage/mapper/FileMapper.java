@@ -8,22 +8,24 @@ import java.util.List;
 @Mapper
 public interface FileMapper {
 
-    @Select("SELECT * FROM files WHERE userid = #{userId}")
-    List<File> getFiles(int userId);
+    @Select("SELECT fileId, fileName FROM files WHERE userid = #{userId}")
+    List<File> getFiles(Integer userId);
 
     @Select("SELECT * FROM files WHERE fileid = #{fileId}")
-    File getFile(int fileId);
+    File getFile(Integer fileId);
 
     @Select("SELECT count(*) FROM files WHERE filename = #{fileName} AND userid = #{userId}")
-    int findExistingFile(String fileName, int userId);
+    int findExistingFile(String fileName, Integer userId);
 
     @Insert("INSERT INTO files (filename, contenttype, filesize, userid, filedata) VALUES(#{fileName}, #{contentType}, #{fileSize}, #{userId}, #{fileData})")
-    int insert(File file);
+    Integer insert(File file);
 
     @Update("UPDATE files SET filename = #{fileName}, contenttype = #{contentType}, filesize = #{fileSize}, filedata = #{fileData} WHERE fileid = #{fileId}")
-    int update(String fileName, String contentType, long fileSize, byte[] fileData, int fileId);
+    Integer update(String fileName, String contentType, long fileSize, byte[] fileData, Integer fileId);
 
     @Delete("DELETE FROM files WHERE fileid = #{fileId}")
-    int delete(int fileId);
+    Integer delete(int fileId);
 
+    @Delete("TRUNCATE TABLE files")
+    void deleteAll();
 }

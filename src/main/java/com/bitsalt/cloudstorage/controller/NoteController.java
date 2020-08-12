@@ -28,7 +28,7 @@ public class NoteController {
     public String showNoteResult(Authentication authentication, Note note, Model model) {
         String actionError = null;
 
-        if (note.getNoteId() > 0) {
+        if (note.getNoteId() != null) {
             return this.editNote(note, model);
         }
         boolean result;
@@ -48,7 +48,7 @@ public class NoteController {
         String actionError = null;
 
         boolean result;
-        int noteId = note.getNoteId();
+        Integer noteId = note.getNoteId();
         result = this.noteService.saveEditedNote(note);
 
         if (result) {
@@ -67,7 +67,7 @@ public class NoteController {
 //    }
 
     @GetMapping("/note/delete/{noteId}")
-    public String deleteNote(@PathVariable("noteId") int noteId, Note note, Model model) {
+    public String deleteNote(@PathVariable("noteId") Integer noteId, Note note, Model model) {
         String actionError = null;
 
         if (this.noteService.deleteNote(note)) {

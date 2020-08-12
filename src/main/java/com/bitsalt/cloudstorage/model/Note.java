@@ -4,7 +4,7 @@ public class Note {
     private Integer noteId;
     private String noteTitle;
     private String noteDescription;
-    private int userId; // foreign key users.userid
+    private Integer userId; // foreign key users.userid
 
     public Note(String noteTitle, String noteDescription) {
         this.noteTitle = noteTitle;
@@ -30,11 +30,12 @@ public class Note {
         return noteDescription;
     }
 
-    public int getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 }
+
