@@ -59,12 +59,6 @@ public class NoteController {
         return "result";
     }
 
-//    @PostMapping("/note/edit/{noteId}")
-//    public String showNoteForEdit(Model model, int noteId) {
-//        Note note = this.noteService.getNoteForEditing(noteId);
-//        model.addAttribute("editNote", note);
-//        return "home/#nav-notes";
-//    }
 
     @GetMapping("/note/delete/{noteId}")
     public String deleteNote(@PathVariable("noteId") Integer noteId, Note note, Model model) {

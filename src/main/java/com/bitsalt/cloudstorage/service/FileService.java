@@ -26,7 +26,6 @@ public class FileService {
         return this.fileMapper.getFile(fileId);
     }
 
-
     public boolean saveFile(MultipartFile multipartFile, Integer userId) throws IOException {
         InputStream inputStream = multipartFile.getInputStream();
         File file = new File(null,
@@ -54,7 +53,7 @@ public class FileService {
         return false;
     }
 
-    public boolean isFileNameUsed(String fileName, int userId) {
+    public boolean isFileNameUsed(String fileName, Integer userId) {
         int fileCount = this.fileMapper.findExistingFile(fileName, userId);
         if (fileCount > 0) {
             return true;
@@ -62,7 +61,7 @@ public class FileService {
         return false;
     }
 
-    public boolean deleteFile(int fileId) {
+    public boolean deleteFile(Integer fileId) {
         int id = this.fileMapper.delete(fileId);
         if (id > 0) {
             return true;

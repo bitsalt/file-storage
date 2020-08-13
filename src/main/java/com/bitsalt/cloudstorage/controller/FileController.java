@@ -11,9 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
@@ -55,24 +53,39 @@ public class FileController {
         return "result";
     }
 
-    @PostMapping("/file/delete/{id}")
-    public String deleteFile(@PathVariable("fileId") int fileId, Model model) {
+
+
+    @GetMapping("/file/delete/{fileId}")
+    public String deleteFile(@PathVariable("fileId") Integer fileId, Model model) {
         if (this.fileService.deleteFile(fileId)) {
             model.addAttribute("actionSuccess", true);
         } else {
-            model.addAttribute("actionFailure", true);
+            model.addAttribute("actionFail", true);
         }
         return "result";
     }
 
-    @GetMapping("/file/view/{id}")
-    public ResponseEntity<byte[]> viewFile(@PathVariable("fileId") int fileId, Model model) {
+
+//    @GetMapping("/file/view/{fileId}")
+//    public ResponseEntity<byte[]> viewFile(@PathVariable("fileId") Integer fileId, Model model) {
+//        File file = this.fileService.getFile(fileId);
+//        return ResponseEntity.ok()
+//                .contentType(MediaType.parseMediaType(file.getContentType()))
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")
+//                .body(file.getFiledata());
+//    }
+    @GetMapping("/file/view/{fileid}")
+    public ResponseEntity downloadFile(@PathVariable("fileid") Integer fileId, Authentication auth,
+                                       Model model) throws IOException {
         File file = this.fileService.getFile(fileId);
+        String contentType = file.getContentType();
+        String fileName = file.getFileName();
         return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(file.getContentType()))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
                 .body(file.getFiledata());
     }
+
 
     public ResponseEntity<Object> downloadFile(@PathVariable("fileId") Integer fileId, Model model) {
         File usrFile = this.fileService.getFile(fileId);
