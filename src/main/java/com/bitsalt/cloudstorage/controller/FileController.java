@@ -29,9 +29,14 @@ public class FileController {
 
     @PostMapping("file/save")
     public String saveFile(Authentication authentication, MultipartFile fileUpload, Model model) throws IOException {
+
+        if (fileUpload.isEmpty()) {
+            model.addAttribute("actionError", "No file to upload.");
+            return "result";
+        }
         User user = this.userService.getUser(authentication.getName());
 
-        if (this.fileService.isFileNameUsed(fileUpload.getName(), user.getUserId())) {
+        if (this.fileService.isFileNameUsed(fileUpload.getOriginalFilename(), user.getUserId())) {
             model.addAttribute("actionError", "File names must be unique.");
             return "result";
         }
@@ -65,15 +70,6 @@ public class FileController {
         return "result";
     }
 
-
-//    @GetMapping("/file/view/{fileId}")
-//    public ResponseEntity<byte[]> viewFile(@PathVariable("fileId") Integer fileId, Model model) {
-//        File file = this.fileService.getFile(fileId);
-//        return ResponseEntity.ok()
-//                .contentType(MediaType.parseMediaType(file.getContentType()))
-//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")
-//                .body(file.getFiledata());
-//    }
     @GetMapping("/file/view/{fileid}")
     public ResponseEntity downloadFile(@PathVariable("fileid") Integer fileId, Authentication auth,
                                        Model model) throws IOException {

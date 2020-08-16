@@ -26,7 +26,6 @@ public class NoteController {
 
     @PostMapping("/note/add")
     public String showNoteResult(Authentication authentication, Note note, Model model) {
-        String actionError = null;
 
         if (note.getNoteId() != null) {
             return this.editNote(note, model);

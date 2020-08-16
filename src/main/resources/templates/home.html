@@ -85,8 +85,8 @@
                                         type="button">Edit</button>
                                 <a th:href="@{/note/delete/{noteId}(noteId=*{note.noteId})}" class="btn btn-danger">Delete</a>
                             </td>
-                            <th scope="row" th:text="*{note.noteTitle}"></th>
-                            <td th:text="*{note.noteDescription}"></td>
+                            <th class="noteTitle" scope="row" th:text="*{note.noteTitle}"></th>
+                            <td class="noteDescription" th:text="*{note.noteDescription}"></td>
                         </tr>
                         </tbody>
                     </table>
@@ -107,7 +107,7 @@
                                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                                     <div class="form-group">
                                         <label for="note-title" class="col-form-label">Title</label>
-                                        <input type="text" name= "noteTitle" class="form-control" id="note-title" maxlength="20" required>
+                                        <input type="text" name="noteTitle" class="form-control" id="note-title" maxlength="20" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="note-description" class="col-form-label">Description</label>
@@ -126,7 +126,7 @@
             </div>
             <div class="tab-pane fade" id="nav-credentials" role="tabpanel" aria-labelledby="nav-credentials-tab">
 
-                <button style="margin: 0.25em;" class="btn btn-info float-right" type="button" onclick="showCredentialModal()">+ Add a New Credential</button>
+                <button id="newCredButton" style="margin: 0.25em;" class="btn btn-info float-right" type="button" onclick="showCredentialModal()">+ Add a New Credential</button>
 
                 <div class="table-responsive">
                     <table class="table table-striped" id="credentialTable">
@@ -149,9 +149,9 @@
                                         type="button">Edit</button>
                                 <a th:href="@{/credential/delete/{credentialId}(credentialId=*{cred.credentialId})}" class="btn btn-danger">Delete</a>
                             </td>
-                            <th scope="row" th:text="*{cred.url}"></th>
-                            <td th:text="*{cred.userName}"></td>
-                            <td th:text="${encryptionService.decryptValue(cred.password, cred.key)}"></td>
+                            <th class="credentialUrl" scope="row" th:text="*{cred.url}"></th>
+                            <td class="credentialUsername" th:text="*{cred.userName}"></td>
+                            <td class="credentialPassword">** hidden **</td>
                         </tr>
                         </tbody>
                     </table>
@@ -171,23 +171,24 @@
                                     <input type="hidden" name="credentialId" id="credential-id">
                                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                                     <div class="form-group">
-                                        <label for="note-title" class="col-form-label">URL</label>
+                                        <label for="credential-url" class="col-form-label">URL</label>
                                         <input type="text" name= "url" class="form-control" id="credential-url" maxlength="100" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="note-title" class="col-form-label">Username</label>
-                                        <input type="text" name= "userName" class="form-control" id="credential-username" maxlength="30" required>
+                                        <label for="credential-username" class="col-form-label">Username</label>
+                                        <input type="text" name="userName" class="form-control" id="credential-username" maxlength="30" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="note-title" class="col-form-label">Password</label>
-                                        <input type="text" name= "password" class="form-control" id="credential-password" maxlength="30" required>
+                                        <label for="credential-password" class="col-form-label">Password</label>
+                                        <input type="text" name="password" class="form-control" id="credential-password" maxlength="30" required>
                                     </div>
                                     <button id="credentialSubmit" type="submit" class="d-none"></button>
                                 </form>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary" onclick="$('#credentialSubmit').click();">Save changes</button>
+                                <button id="credentialSubmitButton" type="button" class="btn btn-primary" onclick="$('#credentialSubmit').click();">Save changes</button>
+
                             </div>
                         </div>
                     </div>

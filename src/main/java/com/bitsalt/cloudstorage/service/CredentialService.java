@@ -20,20 +20,28 @@ public class CredentialService {
         this.encryptionService = encryptionService;
     }
 
-    public boolean addCredential(Credential credential, int userId) {
+    public boolean addCredential(Credential credential, Integer userId) {
         Hashtable<String, String> hash = this.encryptPassword(credential.getPassword());
         credential.setUserId(userId);
-        int credId = this.credentialMapper.insert(credential);
-        if (credId > 0) {
+        credential.setKey(hash.get("key"));
+        credential.setPassword(hash.get("password"));
+        Integer credId = this.credentialMapper.insert(credential);
+        if (credId != null) {
             return true;
         }
         return false;
     }
 
     public boolean saveEditedCredential(Credential credential) {
-        Hashtable<String, String> hash = this.encryptPassword(credential.getPassword());
-        int result = this.credentialMapper.update(credential.getUrl(), credential.getUserName(),
-               hash.get("key"), hash.get("password"), credential.getCredentialId());
+        int result = 0;
+        try {
+            Hashtable<String, String> hash = this.encryptPassword(credential.getPassword());
+            result = this.credentialMapper.update(credential.getUrl(), credential.getUserName(),
+                    hash.get("key"), hash.get("password"), credential.getCredentialId());
+        } catch (Exception e) {
+            System.out.println("Exception in saveEditedCredential() Error: " + e);
+        }
+
         if (result > 0) {
             return true;
         }

@@ -12,32 +12,6 @@ public class File {
     private Integer userId; // foreign key users.userid
     private byte[] fileData;
 
-    public File(Integer fileId, String fileName) {
-        this.fileId = fileId;
-        this.fileName = fileName;
-    }
-
-    public File(Integer fileId) {
-        this.fileId = fileId;
-    }
-
-    public File(String fileName, String contentType, Long fileSize, byte[] fileData, Integer userId) {
-        this.fileName = fileName;
-        this.contentType = contentType;
-        this.fileSize = fileSize;
-        this.fileData = (byte[])fileData;
-        this.userId = userId;
-    }
-
-    public File(Integer fileId, String fileName, String contentType, Long fileSize, byte[] fileData, Integer userId) {
-        this.fileId = fileId;
-        this.fileName = fileName;
-        this.contentType = contentType;
-        this.fileSize = fileSize;
-        this.fileData = (byte[])fileData;
-        this.userId = userId;
-    }
-
     public Integer getFileId() {
         return fileId;
     }

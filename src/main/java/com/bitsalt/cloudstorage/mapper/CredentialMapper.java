@@ -16,7 +16,7 @@ public interface CredentialMapper {
 
     @Insert("INSERT INTO credentials (url, username, password, key, userid) VALUES(#{url}, #{userName}, #{password}, #{key}, #{userId})")
     @Options(useGeneratedKeys = true, keyProperty = "credentialId")
-    int insert(Credential credential);
+    Integer insert(Credential credential);
 
     @Update("UPDATE credentials SET url = #{url}, username = #{userName}, key = #{key}, password = #{password} WHERE credentialid = #{credentialId}")
     int update(String url, String userName, String key, String password, int credentialId);

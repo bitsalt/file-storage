@@ -28,13 +28,20 @@ public class FileService {
 
     public boolean saveFile(MultipartFile multipartFile, Integer userId) throws IOException {
         InputStream inputStream = multipartFile.getInputStream();
-        File file = new File(null,
-                multipartFile.getOriginalFilename(),
-                multipartFile.getContentType(),
-                multipartFile.getSize(),
-                multipartFile.getBytes(),
-                userId
-        );
+        File file = new File();
+        file.setFileName(multipartFile.getOriginalFilename());
+        file.setFileSize(multipartFile.getSize());
+        file.setContentType(multipartFile.getContentType());
+        file.setFileData(multipartFile.getBytes());
+        file.setUserId(userId);
+
+//        File file = new File(null,
+//                multipartFile.getOriginalFilename(),
+//                multipartFile.getContentType(),
+//                multipartFile.getSize(),
+//                multipartFile.getBytes(),
+//                userId
+//        );
         Integer id;
         try {
             if (file.getFileId() == null) {

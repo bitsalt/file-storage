@@ -24,9 +24,8 @@ public class CredentialController {
 
     @PostMapping("/credential/add")
     public String showCredResult(Authentication authentication, Credential credential, Model model) {
-        String actionError = null;
 
-        if (credential.getCredentialId() > 0) {
+        if (credential.getCredentialId() != null) {
             return this.editCredential(credential, model);
         }
 
@@ -36,7 +35,7 @@ public class CredentialController {
         if (result) {
             model.addAttribute("actionSuccess", true);
         } else {
-            model.addAttribute("actionFailure", true);
+            model.addAttribute("actionFail", true);
         }
         return "result";
     }
@@ -46,7 +45,7 @@ public class CredentialController {
         if (result) {
             model.addAttribute("actionSuccess", true);
         } else {
-            model.addAttribute("actionFailure", true);
+            model.addAttribute("actionFail", true);
         }
         return "result";
     }
@@ -58,7 +57,7 @@ public class CredentialController {
         if (this.credentialService.deleteCredential(credential)) {
             model.addAttribute("actionSuccess", true);
         } else {
-            model.addAttribute("actionFailure", true);
+            model.addAttribute("actionFail", true);
         }
         return "result";
     }
