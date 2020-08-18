@@ -3,19 +3,13 @@ package com.bitsalt.cloudstorage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
 import java.nio.charset.Charset;
-import java.util.List;
 import java.util.Random;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -27,8 +21,13 @@ public class CloudstorageTests {
 
     private WebDriver driver;
 
+    private int nameSuffix = 1; // names don't have to be unique, but this will ensure it.
+
+    // user data to test prevention of duplicate users
     private String duplicateUsername = "testUserName";
     private String duplicatePassword = "testPassword";
+
+    // user data for all other tests
     private String existingUserUsername = "testUserName";
     private String existingUserPassword = "testPassword";
 
@@ -73,13 +72,12 @@ public class CloudstorageTests {
     public void signupTest() throws InterruptedException {
         driver.get("http://localhost:" + this.port + "/signup");
         Thread.sleep(2000);
+
         // signup
-        driver.findElement(By.id("inputFirstName")).sendKeys("testFirstName");
-        driver.findElement(By.id("inputLastName")).sendKeys("testLastName");
-        driver.findElement(By.id("inputUsername")).sendKeys(this.existingUserUsername);
-        driver.findElement(By.id("inputPassword")).sendKeys(this.existingUserPassword);
-        driver.findElement(By.cssSelector("button[class='btn btn-primary']")).click();
-//        driver.findElement(By.id("submit-button")).click();
+        this.signupUser(this.existingUserUsername, this.existingUserPassword);
+        Assertions.assertEquals("Login", driver.getTitle());
+        WebElement resultTag = driver.findElement(By.id("success-msg"));
+        Assertions.assertEquals("You successfully signed up! Please login.", resultTag.getText());
 
         // login
         driver.get("http://localhost:" + this.port + "/");
@@ -102,40 +100,34 @@ public class CloudstorageTests {
     @Test
     @Order(4)
     public void testNoDuplicateUsers() throws InterruptedException {
+        WebElement resultTag;
+
         driver.get("http://localhost:" + this.port + "/signup");
         Thread.sleep(2000);
-        driver.findElement(By.id("inputFirstName")).sendKeys("testDuplicateFirstName");
-        driver.findElement(By.id("inputLastName")).sendKeys("testDuplicateLastName");
-        driver.findElement(By.id("inputUsername")).sendKeys("testDuplicateUsername");
-        driver.findElement(By.id("inputPassword")).sendKeys("testDuplicatePassword");
-        driver.findElement(By.id("submit-button")).click();
+
+        // first signup
+        this.signupUser("duplicateUsername", "duplicatePassword");
+        Thread.sleep(2000);
+        Assertions.assertEquals("Login", driver.getTitle());
+        resultTag = driver.findElement(By.id("success-msg"));
+        Assertions.assertEquals("You successfully signed up! Please login.", resultTag.getText());
 
         // signup again...
         driver.get("http://localhost:" + this.port + "/signup");
         Thread.sleep(2000);
-        driver.findElement(By.id("inputFirstName")).sendKeys("testDuplicateFirstName");
-        driver.findElement(By.id("inputLastName")).sendKeys("testDuplicateLastName");
-        driver.findElement(By.id("inputUsername")).sendKeys("testDuplicateUsername");
-        driver.findElement(By.id("inputPassword")).sendKeys("testDuplicatePassword");
-        driver.findElement(By.id("submit-button")).click();
-        Thread.sleep(2000);
-
-        // Redirect to login page should happen on reload
+        this.signupUser("duplicateUsername", "duplicatePassword");
         Thread.sleep(2000);
         Assertions.assertEquals("Sign Up", driver.getTitle());
-        WebElement resultTag = driver.findElement(By.id("error-msg"));
+        resultTag = driver.findElement(By.id("error-msg"));
         Assertions.assertEquals("The username already exists.", resultTag.getText());
     }
-
 
     @Test
     @Order(5)
     public void testUnauthorizedLogin() throws InterruptedException {
         driver.get("http://localhost:" + this.port + "/");
         Thread.sleep(2000);
-        driver.findElement(By.id("inputUsername")).sendKeys("badUsername");
-        driver.findElement(By.id("inputPassword")).sendKeys("badPassword");
-        driver.findElement(By.id("submit-button")).click();
+        doLogin("badUsername", "badPassword");
         Thread.sleep(2000);
         Assertions.assertNotEquals("Home", driver.getTitle());
     }
@@ -145,11 +137,13 @@ public class CloudstorageTests {
     public void testValidLoginAndLogout() throws InterruptedException {
         driver.get("http://localhost:" + this.port + "/");
         Thread.sleep(2000);
-        driver.findElement(By.id("inputUsername")).sendKeys(this.existingUserUsername);
-        driver.findElement(By.id("inputPassword")).sendKeys(this.existingUserPassword);
-        driver.findElement(By.id("submit-button")).click();
+
+        // check login with user set up in signupTest(). If this passes, tests for
+        // notes/files/creds should be fine with this user
+        this.doLogin(this.existingUserUsername, this.existingUserPassword);
         Thread.sleep(2000);
         Assertions.assertEquals("Home", driver.getTitle());
+
         driver.findElement(By.id("logoutButton")).click();
         Thread.sleep(2000);
         Assertions.assertEquals("Login", driver.getTitle());
@@ -160,7 +154,8 @@ public class CloudstorageTests {
     public void testAddNote() throws InterruptedException {
         driver.get("http://localhost:" + this.port + "/");
         Thread.sleep(2000);
-        this.doLogin();
+
+        this.doLogin(this.existingUserUsername, this.existingUserPassword);
         Thread.sleep(2000);
         Assertions.assertEquals("Home", driver.getTitle());
 
@@ -183,7 +178,7 @@ public class CloudstorageTests {
         WebElement resultTag = driver.findElement(By.tagName("h1"));
         Assertions.assertEquals("Success", resultTag.getText());
 
-        // file is visible
+        // note is visible
         driver.get("http://localhost:" + this.port + "/");
         driver.findElement(By.id("nav-notes-tab")).click();
         Thread.sleep(2000);
@@ -191,21 +186,20 @@ public class CloudstorageTests {
         Assertions.assertTrue(driver.findElement(By.className("noteDescription")).isDisplayed());
     }
 
-
     @Test
     @Order(8)
     public void testEditNote() throws InterruptedException {
         driver.get("http://localhost:" + this.port + "/");
         Thread.sleep(2000);
-        this.doLogin();
+
+        this.doLogin(this.existingUserUsername, this.existingUserPassword);
         Thread.sleep(2000);
         Assertions.assertEquals("Home", driver.getTitle());
 
-        // edit
+        // edit note
         driver.findElement(By.id("nav-notes-tab")).click();
         Thread.sleep(2000);
         driver.findElement(By.cssSelector("button[class='btn btn-success']")).click();
-//        driver.findElement(By.className("btn-success")).click();
         Thread.sleep(2000);
 
         try {
@@ -232,20 +226,19 @@ public class CloudstorageTests {
         Assertions.assertEquals("changed note description", driver.findElement(By.className("noteDescription")).getText());
     }
 
-
     @Test
     @Order(9)
     public void testDeleteNote() throws InterruptedException {
         driver.get("http://localhost:" + this.port + "/");
         Thread.sleep(2000);
-        this.doLogin();
+
+        this.doLogin(this.existingUserUsername, this.existingUserPassword);
         Thread.sleep(2000);
         Assertions.assertEquals("Home", driver.getTitle());
 
         driver.findElement(By.id("nav-notes-tab")).click();
         Thread.sleep(2000);
         driver.findElement(By.cssSelector("a[class='btn btn-danger']")).click();
-//        driver.findElement(By.className("btn-danger")).click();
         Thread.sleep(2000);
         Assertions.assertEquals("Result", driver.getTitle());
         WebElement resultTag = driver.findElement(By.tagName("h1"));
@@ -258,18 +251,17 @@ public class CloudstorageTests {
         Thread.sleep(2000);
         Assertions.assertFalse(this.isElementPresent(By.className("noteTitle")));
         Assertions.assertFalse(this.isElementPresent(By.className("noteDescription")));
-//        Assertions.assertFalse(driver.findElement(By.className("noteTitle")).isDisplayed());
-//        Assertions.assertFalse(driver.findElement(By.className("noteDescription")).isDisplayed());
     }
-
 
     @Test
     @Order(10)
     public void testAddCredential() throws InterruptedException {
         driver.get("http://localhost:" + this.port + "/");
         Thread.sleep(2000);
-        this.doLogin();
+
+        this.doLogin(this.existingUserUsername, this.existingUserPassword);
         Thread.sleep(2000);
+        Assertions.assertEquals("Home", driver.getTitle());
         driver.findElement(By.id("nav-credentials-tab")).click();
         Thread.sleep(2000);
         driver.findElement(By.id("newCredButton")).click();
@@ -284,7 +276,6 @@ public class CloudstorageTests {
         } catch(Exception e) {
             System.out.println(e);
         }
-
 
         Thread.sleep(2000);
         Assertions.assertEquals("Result", driver.getTitle());
@@ -301,18 +292,19 @@ public class CloudstorageTests {
         Assertions.assertEquals("** hidden **", driver.findElement(By.className("credentialPassword")).getText());
     }
 
-
     @Test
     @Order(11)
     public void testEditCredential() throws InterruptedException {
         driver.get("http://localhost:" + this.port + "/");
         Thread.sleep(2000);
-        this.doLogin();
+
+        this.doLogin(this.existingUserUsername, this.existingUserPassword);
         Thread.sleep(2000);
+        Assertions.assertEquals("Home", driver.getTitle());
+
         driver.findElement(By.id("nav-credentials-tab")).click();
         Thread.sleep(2000);
         driver.findElement(By.cssSelector("button[class='btn btn-success']")).click();
-//        driver.findElement(By.id("btn-success")).click();
         Thread.sleep(2000);
 
         try {
@@ -347,12 +339,13 @@ public class CloudstorageTests {
     public void canDeleteCredential() throws InterruptedException {
         driver.get("http://localhost:" + this.port + "/");
         Thread.sleep(2000);
-        this.doLogin();
+        this.doLogin(this.existingUserUsername, this.existingUserPassword);
         Thread.sleep(2000);
+        Assertions.assertEquals("Home", driver.getTitle());
+
         driver.findElement(By.id("nav-credentials-tab")).click();
         Thread.sleep(2000);
         driver.findElement(By.cssSelector("a[class='btn btn-danger']")).click();
-//        driver.findElement(By.id("btn-danger")).click();
 
         Assertions.assertEquals("Result", driver.getTitle());
         WebElement resultTag = driver.findElement(By.tagName("h1"));
@@ -364,21 +357,18 @@ public class CloudstorageTests {
         Thread.sleep(1000);
         Assertions.assertFalse(this.isElementPresent(By.className("credentialUrl")));
         Assertions.assertFalse(this.isElementPresent(By.className("credentialUsername")));
-//        Assertions.assertFalse(driver.findElement(By.id("credentialUrl")).isDisplayed());
-//        Assertions.assertFalse(driver.findElement(By.id("credentialUsername")).isDisplayed());
     }
-
 
     @Test
     @Order(13)
     public void testAddFile() throws InterruptedException {
         driver.get("http://localhost:" + this.port + "/");
         Thread.sleep(2000);
-        this.doLogin();
+        this.doLogin(this.existingUserUsername, this.existingUserPassword);
         Thread.sleep(2000);
         Assertions.assertEquals("Home", driver.getTitle());
 
-        // add
+        // add file
         try {
             driver.findElement(By.id("fileUpload")).sendKeys("/Users/jeff/Downloads/README.txt");
             driver.findElement(By.id("fileSubmit")).click();
@@ -397,13 +387,13 @@ public class CloudstorageTests {
         Assertions.assertTrue(driver.findElement(By.className("uploadedFiles")).isDisplayed());
     }
 
-
     @Test
     @Order(14)
     public void testDeleteFile() throws InterruptedException {
         driver.get("http://localhost:" + this.port + "/");
         Thread.sleep(2000);
-        this.doLogin();
+
+        this.doLogin(this.existingUserUsername, this.existingUserPassword);
         Thread.sleep(2000);
         Assertions.assertEquals("Home", driver.getTitle());
 
@@ -416,9 +406,18 @@ public class CloudstorageTests {
         // note is not visible
         driver.get("http://localhost:" + this.port + "/");
         Thread.sleep(2000);
-        driver.findElement(By.id("nav-notes-tab")).click();
-        Thread.sleep(2000);
         Assertions.assertFalse(this.isElementPresent(By.className("uploadedFiles")));
+    }
+
+
+    private void signupUser(String username, String password) {
+        // nameSuffix makes first/last names unique, although not a requirement
+        driver.findElement(By.id("inputFirstName")).sendKeys("Joe_" + this.nameSuffix);
+        driver.findElement(By.id("inputLastName")).sendKeys("User_" + this.nameSuffix);
+        driver.findElement(By.id("inputUsername")).sendKeys(username);
+        driver.findElement(By.id("inputPassword")).sendKeys(password);
+        driver.findElement(By.id("submit-button")).click();
+        this.nameSuffix++;
     }
 
 

@@ -2,6 +2,7 @@ package com.bitsalt.cloudstorage.controller;
 
 import com.bitsalt.cloudstorage.model.User;
 import com.bitsalt.cloudstorage.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,11 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/signup")
 public class SignupController {
-    private final UserService userService;
 
-    public SignupController(UserService userService) {
-        this.userService = userService;
-    }
+    @Autowired
+    private UserService userService;
 
     @GetMapping()
     public String signupView() {

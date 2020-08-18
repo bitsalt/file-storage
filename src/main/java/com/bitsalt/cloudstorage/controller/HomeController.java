@@ -6,6 +6,7 @@ import com.bitsalt.cloudstorage.service.EncryptionService;
 import com.bitsalt.cloudstorage.service.NoteService;
 import com.bitsalt.cloudstorage.service.UserService;
 import com.bitsalt.cloudstorage.service.FileService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -17,20 +18,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/")
 public class HomeController {
-    private final NoteService noteService;
-    private final UserService userService;
-    private final FileService fileService;
-    private final CredentialService credentialService;
-    private final EncryptionService encryptionService;
+    @Autowired
+    private NoteService noteService;
 
-    public HomeController(NoteService noteService, UserService userService, FileService fileService, CredentialService credentialService, EncryptionService encryptionService) {
-        this.noteService = noteService;
-        this.userService = userService;
-        this.fileService = fileService;
-        this.credentialService = credentialService;
-        //this.userId = user.getUserId();
-        this.encryptionService = encryptionService;
-    }
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private FileService fileService;
+
+    @Autowired
+    private CredentialService credentialService;
+
+    @Autowired
+    private EncryptionService encryptionService;
+
 
     @GetMapping
     public String getHomePage(Model model) {

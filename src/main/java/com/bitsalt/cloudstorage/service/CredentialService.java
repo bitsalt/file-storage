@@ -2,6 +2,7 @@ package com.bitsalt.cloudstorage.service;
 
 import com.bitsalt.cloudstorage.mapper.CredentialMapper;
 import com.bitsalt.cloudstorage.model.Credential;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Hashtable;
 
@@ -11,14 +12,12 @@ import java.lang.*;
 
 @Service
 public class CredentialService {
+    @Autowired
     private CredentialMapper credentialMapper;
-    private EncryptionService encryptionService;
-    private Object returnObject;
 
-    public CredentialService(CredentialMapper credentialMapper, EncryptionService encryptionService) {
-        this.credentialMapper = credentialMapper;
-        this.encryptionService = encryptionService;
-    }
+    @Autowired
+    private EncryptionService encryptionService;
+
 
     public boolean addCredential(Credential credential, Integer userId) {
         Hashtable<String, String> hash = this.encryptPassword(credential.getPassword());

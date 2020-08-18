@@ -5,6 +5,7 @@ import com.bitsalt.cloudstorage.model.Note;
 import com.bitsalt.cloudstorage.model.User;
 import com.bitsalt.cloudstorage.service.NoteService;
 import com.bitsalt.cloudstorage.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -16,13 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class NoteController {
-    private final NoteService noteService;
-    private final UserService userService;
 
-    public NoteController(NoteService noteService, UserService userService) {
-        this.userService = userService;
-        this.noteService = noteService;
-    }
+    @Autowired
+    private NoteService noteService;
+
+    @Autowired
+    private UserService userService;
+
 
     @PostMapping("/note/add")
     public String showNoteResult(Authentication authentication, Note note, Model model) {

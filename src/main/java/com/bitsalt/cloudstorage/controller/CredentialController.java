@@ -4,6 +4,7 @@ import com.bitsalt.cloudstorage.model.Credential;
 import com.bitsalt.cloudstorage.model.User;
 import com.bitsalt.cloudstorage.service.CredentialService;
 import com.bitsalt.cloudstorage.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,14 +14,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class CredentialController {
+    @Autowired
     private CredentialService credentialService;
+
+    @Autowired
     private UserService userService;
+
     private String errorMessage;
 
-    public CredentialController(CredentialService credentialService, UserService userService) {
-        this.credentialService = credentialService;
-        this.userService = userService;
-    }
 
     @PostMapping("/credential/add")
     public String showCredResult(Authentication authentication, Credential credential, Model model) {

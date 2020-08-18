@@ -4,6 +4,7 @@ import com.bitsalt.cloudstorage.model.File;
 import com.bitsalt.cloudstorage.model.User;
 import com.bitsalt.cloudstorage.service.FileService;
 import com.bitsalt.cloudstorage.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -19,13 +20,12 @@ import java.io.IOException;
 
 @Controller
 public class FileController {
+    @Autowired
     private FileService fileService;
+
+    @Autowired
     private UserService userService;
 
-    public FileController(FileService fileService, UserService userService) {
-        this.fileService = fileService;
-        this.userService = userService;
-    }
 
     @PostMapping("file/save")
     public String saveFile(Authentication authentication, MultipartFile fileUpload, Model model) throws IOException {

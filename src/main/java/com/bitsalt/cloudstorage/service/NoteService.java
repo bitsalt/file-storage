@@ -2,17 +2,16 @@ package com.bitsalt.cloudstorage.service;
 
 import com.bitsalt.cloudstorage.mapper.NoteMapper;
 import com.bitsalt.cloudstorage.model.Note;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class NoteService {
+    @Autowired
     private NoteMapper noteMapper;
 
-    public NoteService(NoteMapper noteMapper) {
-        this.noteMapper = noteMapper;
-    }
 
     public boolean addNote(Note note, Integer userId) {
         note.setUserId(userId);
