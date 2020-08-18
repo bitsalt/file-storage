@@ -4,6 +4,8 @@ import com.bitsalt.cloudstorage.mapper.CredentialMapper;
 import com.bitsalt.cloudstorage.model.Credential;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Hashtable;
 
 import java.security.SecureRandom;
@@ -11,6 +13,7 @@ import java.util.*;
 import java.lang.*;
 
 @Service
+@Transactional
 public class CredentialService {
     @Autowired
     private CredentialMapper credentialMapper;
